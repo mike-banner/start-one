@@ -1,11 +1,54 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}
+    {# Titre de la page affiché dans l'onglet du navigateur #}
+    Hello HomeController!
+{% endblock %}
 
 {% block body %}
 
+    {# Utilisation d'un thème personnalisé pour les champs du formulaire (optionnel) #}
+    {% form_theme form 'form/fields.html.twig' %}
 
-<h1>{{ message }}</h1>
+    <h1>Ajouter un produit</h1>
 
+    {# Début du formulaire avec encodage multipart/form-data pour gérer les fichiers #}
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+        {# Affiche tous les champs du formulaire #}
+        {{ form_widget(form) }}
+
+        {# Bouton de soumission #}
+        <button type="submit">Enregistrer</button>
+
+    {# Fin du formulaire #}
+    {{ form_end(form) }}
+
+
+    {# Affichage des messages flash de succès (par exemple, "Produit enregistré avec succès.") #}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    {# Affichage des messages flash d'erreur (par exemple, "Erreur lors de l'upload du fichier.") #}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+
+    <h2>Liste des produits</h2>
+
+    <ul>
+        {# Boucle sur tous les produits passés à la vue #}
+        {% for product in products %}
+            <li>
+                {# Affichage du nom et du prix du produit #}
+                {{ product.nameprod }} - {{ product.priceprod }} €
+            </li>
+        {# Si aucun produit n'existe, affichage du message par défaut #}
+        {% else %}
+            <li>Aucun produit</li>
+        {% endfor %}
+    </ul>
 
 {% endblock %}

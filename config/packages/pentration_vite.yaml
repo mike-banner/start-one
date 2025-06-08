@@ -1,0 +1,14 @@
+# config/packages/pentatrion_vite.yaml
+pentatrion_vite:
+  build_directory: 'build'
+  public_directory: 'public'
+  default_config: 'default'
+  configs:
+    default:
+      build_directory: 'build' # facultatif si déjà défini plus haut
+      link_attributes:
+        rel: "stylesheet"
+      preload_attributes:
+        as: "script"
+      script_attributes:
+        type: "module"
