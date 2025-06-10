@@ -1,0 +1,114 @@
+{% form_theme form 'form/fields.html.twig' %}
+
+<div class="form-wrapper">
+    {{ form_start(form, {
+        attr: {
+            enctype: 'multipart/form-data',
+            class: 'custom-form'
+        }
+    }) }}
+
+    <div class="top-row">
+        {{ form_row(form.nameProd) }}
+        {{ form_row(form.numeroProd) }}
+        {{ form_row(form.priceProd) }}
+    </div>
+
+    <div class="second-row">
+        <div class="description-col">
+            {{ form_row(form.descripProd) }}
+        </div>
+
+        <div class="image-col">
+            {{ form_row(form.imgProd) }}
+
+            <div class="gallery-wrapper">
+                {{ form_row(form.galleryProd) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit">Enregistrer</button>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+
+<style>
+.form-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.top-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.top-row > * {
+    flex: 1;
+    min-width: 0;
+}
+
+.second-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 30px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.description-col {
+    flex: 2;
+    min-width: 0;
+}
+
+.image-col {
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+}
+
+
+
+.form-actions {
+    margin-top: 15px;
+}
+
+.custom-form input,
+.custom-form textarea,
+.custom-form select {
+    padding: 8px 10px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.custom-form textarea{
+    height: 180px;
+}
+
+.custom-form .form-group,
+.custom-form div[class^="form-group"] {
+    margin-bottom: 5px;
+}
+
+.form-actions button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-actions button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+
+</style>

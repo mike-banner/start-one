@@ -1,20 +1,70 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProductController!{% endblock %}
+{% block title %}Liste des Produits{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <h1>Liste des Produits</h1>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <div class="create-button">
+        <a href="{{ path('app_product_new') }}" class="btn btn-add">➕ Nouveau produit</a>
+    </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/var/www/html/src/Controller/ProductController.php'|file_link(0) }}">src/Controller/ProductController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/var/www/html/templates/product/index.html.twig'|file_link(0) }}">templates/product/index.html.twig</a></code></li>
-    </ul>
-</div>
+    <table class="product-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Image</th>
+                <th>Numéro</th>
+                <th>Prix</th>
+                <th>Description</th>
+                <th>Galerie</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.idProd }}</td>
+                <td>{{ product.nameProd }}</td>
+
+                <td>
+                    {% if product.imgProd %}
+                        <img src="{{ asset('uploads/' ~ product.imgProd) }}" alt="Image" class="product-img">
+                    {% else %}
+                        <span class="no-img">Pas d’image</span>
+                    {% endif %}
+                </td>
+
+                <td>{{ product.numeroProd }}</td>
+                <td>{{ product.priceProd }} €</td>
+                <td class="desc-container">
+                    {{ product.descripProd|length > 50 ? product.descripProd[:50] ~ '…' : product.descripProd }}
+                </td>
+
+                <td>
+                    {% if product.galleryProd %}
+                        <div class="gallery-container">
+                            {% for img in product.galleryProd %}
+                                <img src="{{ asset('uploads/' ~ img) }}" alt="Galerie" class="gallery-img">
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <td>
+                    <a href="{{ path('app_product_show', {'idProd': product.idProd}) }}" class="btn">👁️</a>
+                    <a href="{{ path('app_product_edit', {'idProd': product.idProd}) }}" class="btn btn-edit">✏️</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">Aucun produit trouvé.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
 {% endblock %}

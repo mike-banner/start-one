@@ -1,0 +1,104 @@
+.form-wrapper {
+  width: 100%;
+  background-color: #333;
+  padding: 30px;
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+
+.custom-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.custom-form .form-group {
+  flex: 1 1 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-form label {
+  color: #fff;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.custom-form input,
+.custom-form textarea,
+.custom-form select {
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background: #444;
+  color: #fff;
+}
+.custom-form textarea{
+  height: 100px;
+  max-width: 400px;
+}
+.form-actions {
+  width: 100%;
+  margin-top: 20px;
+  align-items: flex-end;
+}
+
+.form-actions button {
+  padding: 10px 20px;
+  background: #008cba;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+
+/*bouton delete page edit */
+.action-buttons {
+    display: flex;
+    justify-content: space-around; /* espace entre gauche et droite */
+    align-items: center;
+    margin: 20px 25px;
+    max-width: 100%; /* ou 100%, selon besoin */
+}
+
+/* Bouton back to list en noir sobre */
+.btn-back {
+    display: inline-block;
+    background-color: #000; /* noir */
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-back:hover,
+.btn-back:focus {
+    background-color: #333; /* gris foncé au hover */
+    outline: none;
+}
+
+/* Delete button rouge */
+.delete-button-wrapper {
+    text-align: right;
+}
+
+.delete-button-wrapper .btn-delete {
+    background-color: #dc3545; /* rouge bootstrap */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.delete-button-wrapper .btn-delete:hover {
+    background-color: #a71d2a;
+    text-align: end;
+}

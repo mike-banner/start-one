@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Form\ProductForm;
 use App\Form\ProductType;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,7 +25,7 @@ class HomeController extends AbstractController
     ): Response {
         $product = new Product();
 
-        $form = $this->createForm(ProductType::class, $product);
+        $form = $this->createForm(ProductForm::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

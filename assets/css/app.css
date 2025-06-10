@@ -1,26 +1,6 @@
-body {
-  background-color: #f8f8f8;
-  color: #333;
-}
-
-form {
-    margin-bottom: 2rem;
-    padding: 1rem;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-}
-
-form input, form textarea {
-    display: block;
-    width: 100%;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-}
-
-form button {
-    background-color: #007BFF;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    cursor: pointer;
-}
+@import './layout.css';
+@import './home.css';
+@import './form.css';
+@import './show.css';
+@import './product.css';
+@import './products.css';

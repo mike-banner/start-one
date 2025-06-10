@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.nameProd }}{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="{{ path('app_product_index') }}" class="btn btn-secondary">⬅ Retour à la liste</a>
+
+        <div>
+            {{ include('product/_delete_form.html.twig', {
+                'button_label': '🗑 Supprimer',
+                'class': 'btn btn-danger'
+            }) }}
+        </div>
+    </div>
+
+    <div class="product-details d-flex flex-wrap gap-4 align-items-start">
+
+        {% if product.imgProd %}
+            <div class="product-image">
+                <img src="{{ asset('uploads/' ~ product.imgProd) }}" alt="{{ product.nameProd }}">
+            </div>
+        {% endif %}
+
+        <div class="product-info flex-grow-1">
+            <h2>{{ product.nameProd }}</h2>
+            <p><strong>N° Produit :</strong> {{ product.numeroProd }}</p>
+            <p><strong>Prix :</strong> {{ product.priceProd }} €</p>
+            <p><strong>Description :</strong><br>{{ product.descripProd|nl2br }}</p>
+
+            {% if product.galleryProd %}
+                <div class="product-gallery mt-4">
+                    <h3>Galerie</h3>
+                    <div class="gallery-images">
+                        {% for img in product.galleryProd %}
+                            <img src="{{ asset('uploads/' ~ img) }}" alt="Gallery image {{ loop.index }}" />
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <div class="mt-4">
+            <a href="{{ path('app_product_edit', {'idProd': product.idProd}) }}" class="btn btn-primary">
+             Modifier
+        </a>
+    </div>
+</div>
+{% endblock %}

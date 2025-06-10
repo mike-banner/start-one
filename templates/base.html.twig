@@ -16,6 +16,15 @@
         {% endblock %}
     </head>
     <body>
+        {% block header %}
+        {# Contenu par défaut du header, si un template ne le surcharge pas #}
+        <header class="main-header">
+            <div class="container">
+                <a href="{{ path('home') }}" class="home-button">🏠 Accueil</a>
+            </div>
+        </header>
+        {% endblock %}
+
         {% block body %}{% endblock %}
     </body>
 </html>

@@ -1,18 +1,16 @@
 import { defineConfig } from 'vite'
 import symfonyPlugin from 'vite-plugin-symfony'
 
-export default defineConfig({
-  plugins: [
-    symfonyPlugin(),
-    // react(), // décommente si tu utilises React
-  ],
-  base: '/build/',
+export default defineConfig(({ mode }) => ({
+  plugins: [symfonyPlugin()],
+  root: 'assets',          // la racine de tes sources est 'assets'
+  base: mode === 'production' ? '/build/' : '/',
   build: {
-    outDir: 'public/build',
+    outDir: '../public/build',  // build en prod vers public/build (un niveau au dessus)
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        app: './assets/app.js',
+        app: 'js/app.js',        // chemin relatif dans assets/
       },
     },
   },
@@ -20,4 +18,4 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
   },
-})
+}))

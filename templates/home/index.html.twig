@@ -1,54 +1,64 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    {# Titre de la page affiché dans l'onglet du navigateur #}
-    Hello HomeController!
-{% endblock %}
+{% block title %}Ajouter un produit{% endblock %}
 
 {% block body %}
+{% form_theme form 'form/fields.html.twig' %}
 
-    {# Utilisation d'un thème personnalisé pour les champs du formulaire (optionnel) #}
-    {% form_theme form 'form/fields.html.twig' %}
+<div class="form-container">
+    {{ form_start(form, {
+        attr: {
+            enctype: 'multipart/form-data',
+            class: 'product-form'
+        }
+    }) }}
 
-    <h1>Ajouter un produit</h1>
+    <div class="form-row">
+        <div class="form-group">{{ form_row(form.nameProd) }}</div>
+        <div class="form-group">{{ form_row(form.numeroProd) }}</div>
+        <div class="form-group">{{ form_row(form.priceProd) }}</div>
+    </div>
 
-    {# Début du formulaire avec encodage multipart/form-data pour gérer les fichiers #}
-    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+    <div class="form-row">
+        <div class="form-group">{{ form_row(form.imgProd) }}</div>
+        <div class="form-group">{{ form_row(form.galleryProd) }}</div>
+    </div>
 
-        {# Affiche tous les champs du formulaire #}
-        {{ form_widget(form) }}
+    <div class="form-description-row">
+        {{ form_row(form.descripProd) }}
+    </div>
 
-        {# Bouton de soumission #}
-        <button type="submit">Enregistrer</button>
+    <div class="form-actions">
+        <button type="submit" class="btn-submit">Enregistrer</button>
+    </div>
 
-    {# Fin du formulaire #}
     {{ form_end(form) }}
+</div>
 
+<h2 class="product-list-title">Liste des produits</h2>
 
-    {# Affichage des messages flash de succès (par exemple, "Produit enregistré avec succès.") #}
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">{{ message }}</div>
+<div class="product-grid">
+    {% for product in products %}
+        <div class="product-card">
+            <h2 class="product-number">{{ product.NumeroProd }}</h2>
+            <img src="{{ asset('uploads/' ~ product.imgProd) }}" alt="{{ product.nameProd }}" class="product-image">
+            <div class="product-info">
+                <h3 class="product-name">{{ product.nameProd }}</h3>
+                <p class="product-price">{{ product.priceProd }} €</p>
+                <a href="{{ path('app_product_show', { idProd: product.idProd }) }}" class="btn-view">Voir plus</a>
+            </div>
+        </div>
+    {% else %}
+        <p class="no-products">Aucun produit</p>
     {% endfor %}
+</div>
 
-    {# Affichage des messages flash d'erreur (par exemple, "Erreur lors de l'upload du fichier.") #}
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">{{ message }}</div>
-    {% endfor %}
-
-
-    <h2>Liste des produits</h2>
-
-    <ul>
-        {# Boucle sur tous les produits passés à la vue #}
-        {% for product in products %}
-            <li>
-                {# Affichage du nom et du prix du produit #}
-                {{ product.nameprod }} - {{ product.priceprod }} €
-            </li>
-        {# Si aucun produit n'existe, affichage du message par défaut #}
-        {% else %}
-            <li>Aucun produit</li>
-        {% endfor %}
-    </ul>
+<div class="pagination">
+    <a href="#" class="pagination-prev">«</a>
+    <a href="#" class="pagination-page active">1</a>
+    <a href="#" class="pagination-page">2</a>
+    <a href="#" class="pagination-page">3</a>
+    <a href="#" class="pagination-next">»</a>
+</div>
 
 {% endblock %}
