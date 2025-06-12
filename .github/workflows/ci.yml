@@ -42,6 +42,10 @@ jobs:
 
       - name: 🧰 Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
+
+      - name: 🏗️ Crée la base attendue si besoin
+        run: |
+          mysql -h127.0.0.1 -ustartone_user -psymfony -e "CREATE DATABASE IF NOT EXISTS startone_test_db_test;"
       
       - name: ⚙️ Configure test DATABASE_URL
         run: |
