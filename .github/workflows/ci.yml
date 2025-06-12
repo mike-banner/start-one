@@ -45,6 +45,21 @@ jobs:
         run: |
           echo 'DATABASE_URL="mysql://startone_user:symfony@127.0.0.1:3306/startone_test_db?serverVersion=10.11.13-mariadb"' > .env.test.local
 
+      - name: ⏳ Wait for MariaDB to be ready
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h127.0.0.1 -ustartone_user -psymfony --silent; then
+              echo "MariaDB is up!"
+              break
+            fi
+            echo "Waiting for MariaDB..."
+            sleep 2
+          done
+
+      - name: 🔍 Test DB connection
+        run: |
+          mysql -h127.0.0.1 -ustartone_user -psymfony -e "SHOW DATABASES;"
+
 
       - name: 🛠️ Run Symfony console check
         run: php bin/console about
