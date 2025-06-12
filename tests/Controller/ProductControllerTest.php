@@ -4,16 +4,15 @@ namespace App\Tests\Controller;
 
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 final class ProductControllerTest extends WebTestCase
 {
-    private KernelBrowser $client;
+    private \Symfony\Bundle\FrameworkBundle\KernelBrowser $client;
     private EntityManagerInterface $manager;
-    private EntityRepository $productRepository;
-    private string $path = '/product/';
+    private \Doctrine\Persistence\ObjectRepository $productRepository;
+    private string $path = '/product';
 
     protected function setUp(): void
     {
@@ -21,123 +20,127 @@ final class ProductControllerTest extends WebTestCase
         $this->manager = static::getContainer()->get('doctrine')->getManager();
         $this->productRepository = $this->manager->getRepository(Product::class);
 
+        // Nettoyage de la base avant chaque test
         foreach ($this->productRepository->findAll() as $object) {
             $this->manager->remove($object);
         }
-
         $this->manager->flush();
     }
 
     public function testIndex(): void
     {
-        $this->client->followRedirects();
-        $crawler = $this->client->request('GET', $this->path);
-
-        self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Product index');
-
-        // Use the $crawler to perform additional assertions e.g.
-        // self::assertSame('Some text on the page', $crawler->filter('.p')->first());
+        $this->client->request('GET', $this->path);
+        self::assertResponseStatusCodeSame(Response::HTTP_OK);
+        self::assertPageTitleContains('Produit'); // dépend de <title> dans le template
     }
 
     public function testNew(): void
     {
-        $this->markTestIncomplete();
-        $this->client->request('GET', sprintf('%snew', $this->path));
+        $this->client->followRedirects(); // pour suivre la redirection après submit
+        $this->client->request('GET', $this->path . '/' . 'new');
 
-        self::assertResponseStatusCodeSame(200);
+        self::assertResponseIsSuccessful();
 
-        $this->client->submitForm('Save', [
-            'product[nameProd]' => 'Testing',
-            'product[imgProd]' => 'Testing',
-            'product[numeroProd]' => 'Testing',
-            'product[priceProd]' => 'Testing',
-            'product[descripProd]' => 'Testing',
-            'product[galleryProd]' => 'Testing',
+
+        $this->client->submitForm('Enregistrer', [
+            'product_form[nameProd]' => 'Test produit',
+            'product_form[imgProd]' => new UploadedFile(
+                __DIR__.'/../Fixtures/test.jpg', // mets un vrai fichier de test ici
+                'modif.jpg'
+            ),
+            'product_form[numeroProd]' => 'REF123',
+            'product_form[priceProd]' => 25.5,
+            'product_form[descripProd]' => 'Description test',
+            'product_form[galleryProd]' => [
+                new UploadedFile(__DIR__.'/../Fixtures/test.jpg', 'gal-modif.jpg')
+    ],
         ]);
 
-        self::assertResponseRedirects($this->path);
-
+        self::assertResponseIsSuccessful();
         self::assertSame(1, $this->productRepository->count([]));
     }
 
     public function testShow(): void
     {
-        $this->markTestIncomplete();
-        $fixture = new Product();
-        $fixture->setNameProd('My Title');
-        $fixture->setImgProd('My Title');
-        $fixture->setNumeroProd('My Title');
-        $fixture->setPriceProd('My Title');
-        $fixture->setDescripProd('My Title');
-        $fixture->setGalleryProd('My Title');
+        $this->client->followRedirects();
 
-        $this->manager->persist($fixture);
+        $product = new Product();
+        $product->setNameProd('Produit à voir');
+        $product->setImgProd('img.jpg');
+        $product->setNumeroProd('NUM456');
+        $product->setPriceProd(42.0);
+        $product->setDescripProd('Description');
+        $product->setGalleryProd(['gal1.jpg']);
+
+        $this->manager->persist($product);
         $this->manager->flush();
 
-        $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
-
-        self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Product');
-
-        // Use assertions to check that the properties are properly displayed.
+        $this->client->request('GET', $this->path . '/' . $product->getIdProd());
+        self::assertResponseIsSuccessful();
+        self::assertPageTitleContains('Produit');
     }
 
     public function testEdit(): void
     {
-        $this->markTestIncomplete();
-        $fixture = new Product();
-        $fixture->setNameProd('Value');
-        $fixture->setImgProd('Value');
-        $fixture->setNumeroProd('Value');
-        $fixture->setPriceProd('Value');
-        $fixture->setDescripProd('Value');
-        $fixture->setGalleryProd('Value');
+        $this->client->followRedirects();
 
-        $this->manager->persist($fixture);
+        $product = new Product();
+        $product->setNameProd('Ancien nom');
+        $product->setImgProd('img.png');
+        $product->setNumeroProd('NUM789');
+        $product->setPriceProd(12.34);
+        $product->setDescripProd('Ancienne description');
+        $product->setGalleryProd(['gal.png']);
+
+        $this->manager->persist($product);
         $this->manager->flush();
 
-        $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
+        $this->client->request('GET', $this->path . '/' . $product->getIdProd() . '/edit');
 
-        $this->client->submitForm('Update', [
-            'product[nameProd]' => 'Something New',
-            'product[imgProd]' => 'Something New',
-            'product[numeroProd]' => 'Something New',
-            'product[priceProd]' => 'Something New',
-            'product[descripProd]' => 'Something New',
-            'product[galleryProd]' => 'Something New',
+        $this->client->submitForm('Enregistrer', [ // même nom que dans ton formulaire
+            'product_form[nameProd]' => 'Nom modifié',
+            'product_form[imgProd]' => new UploadedFile(
+                __DIR__.'/../Fixtures/test.jpg', // mets un vrai fichier de test ici
+                'modif.jpg'
+            ),
+            'product_form[numeroProd]' => 'NUM000',
+            'product_form[priceProd]' => 99.99,
+            'product_form[descripProd]' => 'Nouvelle description',
+           'product_form[galleryProd]' => [
+                new UploadedFile(__DIR__.'/../Fixtures/test.jpg', 'gal-modif.jpg')
+    ],
         ]);
 
-        self::assertResponseRedirects('/product/');
+        self::assertResponseIsSuccessful();
+        
 
-        $fixture = $this->productRepository->findAll();
+        $productUpdated = $this->productRepository->find($product->getIdProd());
 
-        self::assertSame('Something New', $fixture[0]->getNameProd());
-        self::assertSame('Something New', $fixture[0]->getImgProd());
-        self::assertSame('Something New', $fixture[0]->getNumeroProd());
-        self::assertSame('Something New', $fixture[0]->getPriceProd());
-        self::assertSame('Something New', $fixture[0]->getDescripProd());
-        self::assertSame('Something New', $fixture[0]->getGalleryProd());
-    }
+        self::assertSame('Nom modifié', $productUpdated->getNameProd());
+self::assertSame('test.jpg', $productUpdated->getImgProd());        self::assertSame('NUM000', $productUpdated->getNumeroProd());
+        self::assertSame(99.99, $productUpdated->getPriceProd());
+        self::assertSame('Nouvelle description', $productUpdated->getDescripProd());
+self::assertSame(['test.jpg'], $productUpdated->getGalleryProd());    }
 
     public function testRemove(): void
     {
-        $this->markTestIncomplete();
-        $fixture = new Product();
-        $fixture->setNameProd('Value');
-        $fixture->setImgProd('Value');
-        $fixture->setNumeroProd('Value');
-        $fixture->setPriceProd('Value');
-        $fixture->setDescripProd('Value');
-        $fixture->setGalleryProd('Value');
+        $this->client->followRedirects();
 
-        $this->manager->persist($fixture);
+        $product = new Product();
+        $product->setNameProd('À supprimer');
+        $product->setImgProd('del.jpg');
+        $product->setNumeroProd('DEL123');
+        $product->setPriceProd(13.5);
+        $product->setDescripProd('Description');
+        $product->setGalleryProd(['gal.jpg']);
+
+        $this->manager->persist($product);
         $this->manager->flush();
 
-        $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
-        $this->client->submitForm('Delete');
+        $this->client->request('GET', $this->path . '/' . $product->getIdProd());
+        $this->client->submitForm('Delete'); // à adapter selon le nom exact du bouton
 
-        self::assertResponseRedirects('/product/');
+        self::assertResponseIsSuccessful();
         self::assertSame(0, $this->productRepository->count([]));
     }
 }

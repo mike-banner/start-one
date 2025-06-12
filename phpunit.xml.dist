@@ -16,6 +16,8 @@
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
          <env name="APP_DEBUG" value="1" />
+        <env name="DATABASE_URL" value="mysql://startone_user:symfony@db:3306/startone_test_db?serverVersion=10.11.13-mariadb" />
+
     </php>
 
     <testsuites>

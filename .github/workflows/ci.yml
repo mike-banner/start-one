@@ -45,5 +45,5 @@ jobs:
         run: php bin/console about
 
       # Décommenter si tu as des tests
-      # - name: 🧪 Run PHPUnit tests
-      #   run: php bin/phpunit
+      - name: 🧪 Run PHPUnit tests
+        run: php bin/phpunit

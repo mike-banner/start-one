@@ -22,25 +22,37 @@ final class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_product_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $product = new Product();
-        $form = $this->createForm(ProductForm::class, $product);
-        $form->handleRequest($request);
+#[Route('/new', name: 'app_product_new', methods: ['GET', 'POST'])]
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $product = new Product();
+    $form = $this->createForm(ProductForm::class, $product);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($product);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $imgFile = $form->get('imgProd')->getData();
+        if ($imgFile) {
+            $product->setImgProd($imgFile->getClientOriginalName());
         }
+        $galleryFiles = $form->get('galleryProd')->getData();
+        if ($galleryFiles) {
+            $names = [];
+            foreach ($galleryFiles as $file) {
+                $names[] = $file->getClientOriginalName();
+            }
+            $product->setGalleryProd($names);
+        }
+        $entityManager->persist($product);
+        $entityManager->flush();
 
-        return $this->render('product/new.html.twig', [
-            'product' => $product,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->render('product/new.html.twig', [
+        'product' => $product,
+        'form' => $form,
+    ]);
+}
 
     #[Route('/{idProd}', name: 'app_product_show', methods: ['GET'])]
     public function show(Product $product): Response
@@ -50,23 +62,36 @@ final class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/{idProd}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(ProductForm::class, $product);
-        $form->handleRequest($request);
+#[Route('/{idProd}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
+public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
+{
+    $form = $this->createForm(ProductForm::class, $product);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $imgFile = $form->get('imgProd')->getData();
+        if ($imgFile) {
+            $product->setImgProd($imgFile->getClientOriginalName());
         }
+        $galleryFiles = $form->get('galleryProd')->getData();
+        if ($galleryFiles) {
+            $names = [];
+            foreach ($galleryFiles as $file) {
+                $names[] = $file->getClientOriginalName();
+            }
+            $product->setGalleryProd($names);
+        }
+        $entityManager->flush();
 
-        return $this->render('product/edit.html.twig', [
-            'product' => $product,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->render('product/edit.html.twig', [
+        'product' => $product,
+        'form' => $form,
+    ]);
+}
+
 
     #[Route('/{idProd}', name: 'app_product_delete', methods: ['POST'])]
     public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
