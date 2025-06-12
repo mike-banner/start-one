@@ -15,8 +15,8 @@ jobs:
         image: mariadb:10.11
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: symfony
-          MYSQL_USER: symfony
+          MYSQL_DATABASE: startone_test_db
+          MYSQL_USER: startone_user
           MYSQL_PASSWORD: symfony
         ports:
           - 3306:3306
