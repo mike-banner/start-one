@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: "mysql://startone_user:symfony@127.0.0.1:3306/startone_test_db?serverVersion=10.11.13-mariadb"
 
     services:
       mariadb:
