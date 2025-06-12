@@ -40,6 +40,11 @@ jobs:
 
       - name: 🧰 Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
+      
+      - name: ⚙️ Configure test DATABASE_URL
+        run: |
+          echo 'DATABASE_URL="mysql://startone_user:symfony@127.0.0.1:3306/startone_test_db?serverVersion=10.11.13-mariadb"' > .env.test.local
+
 
       - name: 🛠️ Run Symfony console check
         run: php bin/console about
