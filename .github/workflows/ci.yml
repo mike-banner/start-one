@@ -17,7 +17,7 @@ jobs:
         image: mariadb:10.11
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: startone_test_db
+          MYSQL_DATABASE: startone_test_db_test
           MYSQL_USER: startone_user
           MYSQL_PASSWORD: symfony
         ports:
@@ -43,6 +43,8 @@ jobs:
       - name: 🧰 Copy init.sql for MariaDB
         run: echo "GRANT ALL PRIVILEGES ON *.* TO 'startone_user'@'%' WITH GRANT OPTION;" > init.sql
              echo "GRANT ALL PRIVILEGES ON startone_test_db_test.* TO 'startone_user'@'%';" >> init.sql
+             echo "FLUSH PRIVILEGES;" >> init.sql
+             mysql -h127.0.0.1 -uroot -proot < init.sql      
       
       - name: 🧰 Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
