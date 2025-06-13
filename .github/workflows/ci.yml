@@ -76,6 +76,10 @@ jobs:
       - name: 🛠️ Run Symfony console check
         run: php bin/console about
 
+      - name: ⚙️ Create database schema
+        run: php bin/console doctrine:schema:create --env=test
+
+
       # Décommenter si tu as des tests
       - name: 🧪 Run PHPUnit tests
         run: php bin/phpunit
