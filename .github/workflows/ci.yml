@@ -42,7 +42,8 @@ jobs:
       
       - name: 🧰 Copy init.sql for MariaDB
         run: echo "GRANT ALL PRIVILEGES ON *.* TO 'startone_user'@'%' WITH GRANT OPTION;" > init.sql
-
+             echo "GRANT ALL PRIVILEGES ON startone_test_db_test.* TO 'startone_user'@'%';" >> init.sql
+      
       - name: 🧰 Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
 
